@@ -1,4 +1,5 @@
 mod controllers;
+mod crypto;
 mod db;
 mod errors;
 mod models;
@@ -13,7 +14,10 @@ use axum::{
 use tower_http::trace::{self, TraceLayer};
 use tracing::Level;
 
-use crate::{controllers::signup, db::Database};
+use crate::{
+    controllers::{login, signup},
+    db::Database,
+};
 
 struct AvalonState {
     pub db: Database,
@@ -30,6 +34,7 @@ async fn main() {
     let app = Router::new()
         .route("/", get(|| async { "Hello, World!" }))
         .route("/api/v1/signup", post(signup))
+        .route("/api/v1/login", post(login))
         .layer(
             TraceLayer::new_for_http()
                 .make_span_with(trace::DefaultMakeSpan::new().level(Level::DEBUG))
