@@ -65,14 +65,8 @@ pub fn authenticate(
     let mut exact_signauture_bytes: [u8; 64] = [0u8; 64];
 
     for index in 0..64 {
-        exact_signauture_bytes[index] =
-            signature_bytes.to_vec().pop().ok_or_else(|| HttpError {
-                message: format!("Signature could not be parsed"),
-                status_code: StatusCode::INTERNAL_SERVER_ERROR,
-                error_code: Some(50),
-            })?;
+        exact_signauture_bytes[index] = signature_bytes[index];
     }
-    exact_signauture_bytes.reverse();
 
     let signature = Signature::from_bytes(&exact_signauture_bytes);
 
@@ -81,7 +75,7 @@ pub fn authenticate(
 
 pub fn generate_jwt_token(user_id: &str) -> Result<String, HttpError> {
     // Set your secret key for signing the token
-    let secret = env::var("JWT_SCRET").map_err(|err| HttpError {
+    let secret = env::var("JWT_SECRET").map_err(|err| HttpError {
         message: format!("Could not get jwt secret from ENV - {}", err.to_string()),
         status_code: StatusCode::INTERNAL_SERVER_ERROR,
         error_code: Some(50),

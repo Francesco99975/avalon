@@ -17,6 +17,8 @@ pub async fn signup(
     Extension(state): Extension<Arc<AvalonState>>,
     Json(payload): Json<SignupPayload>,
 ) -> Result<Json<RegisterResponse>, HttpError> {
+    tracing::debug!("Payload Signup: {:?}", payload);
+
     let pool = state.db.pool.clone();
 
     let user_id = create_user(&payload, &pool).await?;
@@ -28,6 +30,8 @@ pub async fn login(
     Extension(state): Extension<Arc<AvalonState>>,
     Json(payload): Json<LoginPayload>,
 ) -> Result<Json<JWT>, HttpError> {
+    tracing::debug!("Payload Login: {:?}", payload);
+
     let pool = state.db.pool.clone();
 
     let devices = get_user_devices(&payload.user_id, &pool).await?;

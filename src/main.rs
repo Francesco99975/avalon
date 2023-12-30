@@ -48,9 +48,9 @@ async fn main() {
     // run our app with hyper, listening globally on port 3001
     match tokio::net::TcpListener::bind(&addr).await {
         Ok(listener) => match axum::serve(listener, app.into_make_service()).await {
-            Ok(_) => tracing::info!("listening on {}", 3001),
-            Err(_) => tracing::error!("Could not start server"),
+            Ok(_) => println!("Exited Gracefully"),
+            Err(err) => panic!("Server Error: {}", err.to_string()),
         },
-        Err(_) => tracing::error!("Could not create TCP Listener"),
+        Err(err) => panic!("Tcp Error: {}", err.to_string()),
     };
 }
