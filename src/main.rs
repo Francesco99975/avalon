@@ -2,6 +2,7 @@ mod controllers;
 mod crypto;
 mod db;
 mod errors;
+mod middleware;
 mod models;
 
 use std::{net::SocketAddr, sync::Arc};

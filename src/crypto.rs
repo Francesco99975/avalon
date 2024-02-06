@@ -1,4 +1,7 @@
-use std::env;
+use std::{
+    env,
+    time::{Duration, SystemTime},
+};
 
 use argon2::{
     password_hash::{rand_core::OsRng, SaltString},
@@ -81,10 +84,15 @@ pub fn generate_jwt_token(user_id: &str) -> Result<String, HttpError> {
         error_code: Some(50),
     })?;
 
+    let expiration_time = SystemTime::now() + Duration::from_secs(3600);
+
     // Set the claims for the token
     let claims = Claims {
         sub: user_id.to_owned(),
-        exp: 1_000_000_000, // Set the expiration time (in seconds since the Unix epoch)
+        exp: expiration_time
+            .duration_since(SystemTime::UNIX_EPOCH)
+            .unwrap()
+            .as_secs() as usize, // Set the expiration time (in seconds since the Unix epoch)
     };
 
     // Set the algorithm to be used for signing the token
